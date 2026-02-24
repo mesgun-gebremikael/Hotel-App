@@ -16,12 +16,14 @@ var options = new DbContextOptionsBuilder<AppDbContext>()
 
 using var db = new AppDbContext(options);
 var roomService = new RoomService(db);
+var customerService = new CustomerService(db);
 
 bool running = true;
 
 while (running)
 {
     Console.WriteLine("\n==== HOTEL APP ====");
+    Console.WriteLine("2. Kunder");
     Console.WriteLine("1. Rum");
     Console.WriteLine("0. Avsluta");
     Console.Write("Välj: ");
@@ -38,6 +40,9 @@ while (running)
             break;
         default:
             Console.WriteLine("Fel val.");
+            break;
+        case "2":
+            CustomersMenu(customerService);
             break;
     }
 }
@@ -71,6 +76,45 @@ static void RoomsMenu(RoomService roomService)
                 break;
             case "4":
                 roomService.DeleteRoom();
+                break;
+            case "0":
+                back = true;
+                break;
+            default:
+                Console.WriteLine("Fel val.");
+                break;
+        }
+    }
+}
+static void CustomersMenu(CustomerService customerService)
+{
+    bool back = false;
+
+    while (!back)
+    {
+        Console.WriteLine("\n--- KUND MENY ---");
+        Console.WriteLine("1. Lista kunder");
+        Console.WriteLine("2. Lägg till kund");
+        Console.WriteLine("3. Uppdatera kund");
+        Console.WriteLine("4. Radera kund");
+        Console.WriteLine("0. Tillbaka");
+        Console.Write("Välj: ");
+
+        var choice = Console.ReadLine();
+
+        switch (choice)
+        {
+            case "1":
+                customerService.ListCustomers();
+                break;
+            case "2":
+                customerService.AddCustomer();
+                break;
+            case "3":
+                customerService.UpdateCustomer();
+                break;
+            case "4":
+                customerService.DeleteCustomer();
                 break;
             case "0":
                 back = true;
