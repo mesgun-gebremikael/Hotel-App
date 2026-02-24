@@ -39,6 +39,14 @@ namespace Hotel_App.Data
                 new Customer { Id = 3, FirstName = "Lina", LastName = "Hassan", Email = "lina@example.com", Phone = "0700000003" },
                 new Customer { Id = 4, FirstName = "Jonas", LastName = "Svensson", Email = "jonas@example.com", Phone = "0700000004" }
             );
+            modelBuilder.Entity<Room>()
+            .Property(r => r.PricePerNight)
+            .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.TotalAmount)
+                .HasPrecision(10, 2);
         }
+
     }
 }
