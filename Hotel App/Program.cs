@@ -17,12 +17,14 @@ var options = new DbContextOptionsBuilder<AppDbContext>()
 using var db = new AppDbContext(options);
 var roomService = new RoomService(db);
 var customerService = new CustomerService(db);
+var bookingService = new BookingService(db);
 
 bool running = true;
 
 while (running)
 {
     Console.WriteLine("\n==== HOTEL APP ====");
+    Console.WriteLine("3. Bokningar");
     Console.WriteLine("2. Kunder");
     Console.WriteLine("1. Rum");
     Console.WriteLine("0. Avsluta");
@@ -43,6 +45,9 @@ while (running)
             break;
         case "2":
             CustomersMenu(customerService);
+            break;
+        case "3":
+            BookingsMenu(bookingService);
             break;
     }
 }
@@ -115,6 +120,37 @@ static void CustomersMenu(CustomerService customerService)
                 break;
             case "4":
                 customerService.DeleteCustomer();
+                break;
+            case "0":
+                back = true;
+                break;
+            default:
+                Console.WriteLine("Fel val.");
+                break;
+        }
+    }
+}
+static void BookingsMenu(BookingService bookingService)
+{
+    bool back = false;
+
+    while (!back)
+    {
+        Console.WriteLine("\n--- BOKNING MENY ---");
+        Console.WriteLine("1. Lista bokningar");
+        Console.WriteLine("2. Skapa bokning");
+        Console.WriteLine("0. Tillbaka");
+        Console.Write("Välj: ");
+
+        var choice = Console.ReadLine();
+
+        switch (choice)
+        {
+            case "1":
+                bookingService.ListBookings();
+                break;
+            case "2":
+                bookingService.CreateBooking();
                 break;
             case "0":
                 back = true;

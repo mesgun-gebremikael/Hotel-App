@@ -12,8 +12,8 @@ namespace Hotel_App.Models
         public int CustomerId { get; set; }
         public Customer Customer { get; set; } = null!;
 
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
