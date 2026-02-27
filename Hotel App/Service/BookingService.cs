@@ -263,6 +263,31 @@ namespace Hotel_App.Services
                 Console.WriteLine($"Rum {r.RoomNumber} | {r.Type} | Kapacitet: {r.BaseCapacity + r.ExtraBedsMax} | Pris: {r.PricePerNight} kr");
             }
         }
+
+        public void CancelUnpaidBookingsOlderThan10Days()
+        {
+            var limit = DateTime.UtcNow.AddDays(-10);
+
+            var oldUnpaid = _db.Bookings
+                .Include(b => b.Invoice)
+                .Where(b => b.Status == BookingStatus.Active &&
+                            b.CreatedAt < limit &&
+                            b.Invoice != null &&
+                            b.Invoice.PaidAt == null)
+                .ToList();
+
+            if (oldUnpaid.Count == 0)
+                return;
+
+            foreach (var b in oldUnpaid)
+            {
+                b.Status = BookingStatus.Cancelled;
+            }
+
+            _db.SaveChanges();
+
+            Console.WriteLine($"[INFO] {oldUnpaid.Count} bokning(ar) annullerades (ej betalda inom 10 dagar).");
+        }
     }
 
 }

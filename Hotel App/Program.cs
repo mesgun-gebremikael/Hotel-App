@@ -19,6 +19,7 @@ using var db = new AppDbContext(options);
 var roomService = new RoomService(db);
 var customerService = new CustomerService(db);
 var bookingService = new BookingService(db);
+bookingService.CancelUnpaidBookingsOlderThan10Days();
 var invoiceService = new InvoiceService(db);
 var menu = new Menu();
 
