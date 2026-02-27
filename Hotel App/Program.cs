@@ -137,6 +137,7 @@ static void BookingsMenu(BookingService bookingService)
     while (!back)
     {
         Console.WriteLine("\n--- BOKNING MENY ---");
+        Console.WriteLine("3. Sök lediga rum");
         Console.WriteLine("1. Lista bokningar");
         Console.WriteLine("2. Skapa bokning");
         Console.WriteLine("0. Tillbaka");
@@ -157,6 +158,9 @@ static void BookingsMenu(BookingService bookingService)
                 break;
             default:
                 Console.WriteLine("Fel val.");
+                break;
+            case "3":
+                bookingService.SearchAvailableRooms();
                 break;
         }
     }

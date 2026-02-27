@@ -175,5 +175,66 @@ namespace Hotel_App.Services
 
             return true;
         }
+        public void SearchAvailableRooms()
+        {
+            Console.WriteLine("\n--- SÖK LEDIGA RUM ---");
+
+            if (!TryReadDate("Startdatum (YYYY-MM-DD): ", out DateTime start))
+                return;
+
+            if (!TryReadDate("Slutdatum (YYYY-MM-DD): ", out DateTime end))
+                return;
+
+            start = start.Date;
+            end = end.Date;
+
+            var today = DateTime.Today;
+
+            if (start < today)
+            {
+                Console.WriteLine("Du kan inte söka i dåtid.");
+                return;
+            }
+
+            if (end <= start)
+            {
+                Console.WriteLine("Slutdatum måste vara efter startdatum.");
+                return;
+            }
+
+            Console.Write("Antal personer: ");
+            if (!int.TryParse(Console.ReadLine(), out int persons) || persons <= 0 || persons > 4)
+            {
+                Console.WriteLine("Fel antal personer (skriv t.ex. 1-4).");
+                return;
+            }
+
+            // Rum klarar persons om: BaseCapacity + ExtraBedsMax >= persons
+            // Rum är ledigt om det INTE finns någon aktiv bokning som overlappar perioden
+            var availableRooms = _db.Rooms
+                .Where(r => (r.BaseCapacity + r.ExtraBedsMax) >= persons)
+                .Where(r => !_db.Bookings.Any(b =>
+                    b.RoomId == r.Id &&
+                    b.Status == BookingStatus.Active &&
+                    start < b.EndDate &&
+                    end > b.StartDate
+                ))
+                .OrderBy(r => r.RoomNumber)
+                .ToList();
+
+            Console.WriteLine($"\nLediga rum för {persons} personer mellan {start:yyyy-MM-dd} och {end:yyyy-MM-dd}:");
+
+            if (availableRooms.Count == 0)
+            {
+                Console.WriteLine("Inga lediga rum hittades.");
+                return;
+            }
+
+            foreach (var r in availableRooms)
+            {
+                Console.WriteLine($"Rum {r.RoomNumber} | {r.Type} | Kapacitet: {r.BaseCapacity + r.ExtraBedsMax} | Pris: {r.PricePerNight} kr");
+            }
+        }
     }
+
 }
