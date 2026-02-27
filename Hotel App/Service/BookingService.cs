@@ -156,10 +156,38 @@ namespace Hotel_App.Services
                 CreatedAt = DateTime.UtcNow
             };
 
+            // Räkna antal nätter
+            int nights = (booking.EndDate.Date - booking.StartDate.Date).Days;
+
+            if (nights <= 0)
+            {
+                Console.WriteLine("Fel antal nätter.");
+                return;
+            }
+
+            // Extra bädd kostnad
+            decimal extraCostPerNight = booking.ExtraBedsUsed * 200;
+
+            // Räkna totalpris
+            decimal totalAmount = (room.PricePerNight + extraCostPerNight) * nights;
+
+            // Skapa faktura
+            var invoice = new Invoice
+            {
+                Booking = booking,
+                TotalAmount = totalAmount
+            };
+
+            // Koppla fakturan
+            booking.Invoice = invoice;
+
+            // Lägg till bokning
             _db.Bookings.Add(booking);
+
+            // Spara allt
             _db.SaveChanges();
 
-            Console.WriteLine("Bokningen är skapad!");
+            Console.WriteLine("Bokningen och fakturan är skapad!");
         }
 
         private bool TryReadDate(string prompt, out DateTime date)
