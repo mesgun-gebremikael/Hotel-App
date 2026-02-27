@@ -2,6 +2,7 @@
 using Hotel_App.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Hotel_App;
 
 var config = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -18,6 +19,8 @@ using var db = new AppDbContext(options);
 var roomService = new RoomService(db);
 var customerService = new CustomerService(db);
 var bookingService = new BookingService(db);
+var invoiceService = new InvoiceService(db);
+var menu = new Menu();
 
 bool running = true;
 
@@ -47,7 +50,7 @@ while (running)
             CustomersMenu(customerService);
             break;
         case "3":
-            BookingsMenu(bookingService);
+            BookingsMenu(bookingService, menu, invoiceService);
             break;
     }
 }
@@ -130,13 +133,14 @@ static void CustomersMenu(CustomerService customerService)
         }
     }
 }
-static void BookingsMenu(BookingService bookingService)
+static void BookingsMenu(BookingService bookingService, Menu menu, InvoiceService invoiceService)
 {
     bool back = false;
 
     while (!back)
     {
         Console.WriteLine("\n--- BOKNING MENY ---");
+        Console.WriteLine("4. Fakturor");
         Console.WriteLine("3. Sök lediga rum");
         Console.WriteLine("1. Lista bokningar");
         Console.WriteLine("2. Skapa bokning");
@@ -162,6 +166,10 @@ static void BookingsMenu(BookingService bookingService)
             case "3":
                 bookingService.SearchAvailableRooms();
                 break;
+            case "4":
+                menu.InvoicesMenu(invoiceService);
+                break;
         }
     }
 }
+ 
