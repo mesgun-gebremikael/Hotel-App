@@ -172,5 +172,6 @@ static void BookingsMenu(BookingService bookingService, Menu menu, InvoiceServic
                 break;
         }
     }
+
 }
  
