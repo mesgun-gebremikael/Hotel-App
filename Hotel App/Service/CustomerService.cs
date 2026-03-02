@@ -116,28 +116,34 @@ namespace Hotel_App.Services
 
         public void DeleteCustomer()
         {
-            Console.WriteLine("\n--- RADERA KUND ---");
-            ListCustomers();
+            Console.Write("\nAnge kundens ID att radera: ");
 
-            Console.Write("\nSkriv ID på kund att radera: ");
             if (!int.TryParse(Console.ReadLine(), out int customerId))
             {
                 Console.WriteLine("Fel ID.");
                 return;
             }
 
-            var customer = _db.Customers.FirstOrDefault(c => c.Id == customerId);
+            var customer = _db.Customers
+                .Include(c => c.Bookings)
+                .FirstOrDefault(c => c.Id == customerId);
+
             if (customer == null)
             {
                 Console.WriteLine("Kunden hittades inte.");
                 return;
             }
 
-            
+            if (customer.Bookings.Any())
+            {
+                Console.WriteLine("Kan inte radera kunden. Kunden har bokningar.");
+                return;
+            }
+
             _db.Customers.Remove(customer);
             _db.SaveChanges();
 
-            Console.WriteLine("Kunden är raderad!");
+            Console.WriteLine("Kunden raderades.");
         }
     }
 }

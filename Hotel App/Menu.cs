@@ -17,20 +17,22 @@ namespace Hotel_App
             while (!back)
             {
                 Console.WriteLine("\n--- FAKTURA MENY ---");
-                Console.WriteLine("1. Lista fakturor");
                 Console.WriteLine("2. Registrera betalning");
+
+                Console.WriteLine("1. Lista fakturor");
                 Console.WriteLine("0. Tillbaka");
                 Console.Write("Välj: ");
 
                 var choice = Console.ReadLine();
 
+
                 switch (choice)
                 {
-                    case "1":
-                        invoiceService.ListInvoices();
-                        break;
                     case "2":
                         invoiceService.RegisterPayment();
+                        break;
+                    case "1":
+                        invoiceService.ListInvoices();
                         break;
                     case "0":
                         back = true;
