@@ -86,7 +86,7 @@ namespace Hotel_App.Services
 
             invoice.PaidAt = DateTime.UtcNow;
 
-            //  När betald faktura -> bokning blir Paid
+            //  När betald faktura - bokning blir Paid
             invoice.Booking.Status = BookingStatus.Paid;
 
             _db.SaveChanges();

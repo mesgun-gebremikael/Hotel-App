@@ -130,7 +130,7 @@ namespace Hotel_App.Services
                 }
             }
 
-            // 5) kolla overlap (ingen dubbelbokning)
+            // 5) kolla overlap ingen dubbelbokning
             bool conflict = _db.Bookings.Any(b =>
                 b.RoomId == roomId &&
                 b.Status == BookingStatus.Active &&
@@ -237,8 +237,8 @@ namespace Hotel_App.Services
                 return;
             }
 
-            // Rum klarar personer om: BaseCapacity + ExtraBedsMax >= persons
-            // Rum är ledigt om det INTE finns någon bokning som overlappar perioden (Active eller Paid)
+            // Rum klarar personer om BaseCapacity och ExtraBedsMax >= persons
+            // Rum är ledigt om det inte finns någon bokning som overlappar perioden : Active eller Paid
             var availableRooms = _db.Rooms
                 .Where(r => (r.BaseCapacity + r.ExtraBedsMax) >= persons)
                 .Where(r => !_db.Bookings.Any(b =>
