@@ -19,9 +19,9 @@ namespace Hotel_App.Services
         {
             var invoices = _db.Invoices
                 .Include(i => i.Booking)
-                .ThenInclude(b => b.Room)
+                    .ThenInclude(b => b.Room)
                 .Include(i => i.Booking)
-                .ThenInclude(b => b.Customer)
+                    .ThenInclude(b => b.Customer)
                 .OrderByDescending(i => i.IssuedAt)
                 .ToList();
 
@@ -35,8 +35,17 @@ namespace Hotel_App.Services
 
             foreach (var i in invoices)
             {
-                var paidText = i.PaidAt.HasValue ? $"BETALD ({i.PaidAt.Value:yyyy-MM-dd})" : "OBETALD";
-                Console.WriteLine($"{i.Id}. {paidText} | {i.TotalAmount} kr | Rum {i.Booking.Room.RoomNumber} | {i.Booking.Customer.FirstName} {i.Booking.Customer.LastName} | Bokad: {i.Booking.CreatedAt:yyyy-MM-dd}");
+                var invoiceStatus = i.PaidAt.HasValue ? "BETALD" : "OBETALD";
+                var paidText = i.PaidAt.HasValue ? $"{i.PaidAt.Value:yyyy-MM-dd}" : "-";
+
+                Console.WriteLine(
+                    $"{i.Id}. {invoiceStatus} | {i.TotalAmount} kr | " +
+                    $"Rum {i.Booking.Room.RoomNumber} | " +
+                    $"{i.Booking.Customer.FirstName} {i.Booking.Customer.LastName} | " +
+                    $"Bokning: {i.Booking.Status} | " +
+                    $"Skapad: {i.Booking.CreatedAt:yyyy-MM-dd} | " +
+                    $"Betald: {paidText}"
+                );
             }
         }
 
@@ -68,8 +77,18 @@ namespace Hotel_App.Services
                 return;
             }
 
+            // Blockera betalning om bokningen är annullerad
+            if (invoice.Booking.Status == BookingStatus.Cancelled)
+            {
+                Console.WriteLine("Kan inte registrera betalning. Bokningen är annullerad.");
+                return;
+            }
+
             invoice.PaidAt = DateTime.UtcNow;
+
+            //  När betald faktura -> bokning blir Paid
             invoice.Booking.Status = BookingStatus.Paid;
+
             _db.SaveChanges();
 
             Console.WriteLine("Betalning registrerad!");
