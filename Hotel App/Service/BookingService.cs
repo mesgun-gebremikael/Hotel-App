@@ -237,13 +237,13 @@ namespace Hotel_App.Services
                 return;
             }
 
-            // Rum klarar persons om: BaseCapacity + ExtraBedsMax >= persons
-            // Rum är ledigt om det INTE finns någon aktiv bokning som overlappar perioden
+            // Rum klarar personer om: BaseCapacity + ExtraBedsMax >= persons
+            // Rum är ledigt om det INTE finns någon bokning som overlappar perioden (Active eller Paid)
             var availableRooms = _db.Rooms
                 .Where(r => (r.BaseCapacity + r.ExtraBedsMax) >= persons)
                 .Where(r => !_db.Bookings.Any(b =>
                     b.RoomId == r.Id &&
-                    b.Status == BookingStatus.Active &&
+                    (b.Status == BookingStatus.Active || b.Status == BookingStatus.Paid) &&
                     start < b.EndDate &&
                     end > b.StartDate
                 ))

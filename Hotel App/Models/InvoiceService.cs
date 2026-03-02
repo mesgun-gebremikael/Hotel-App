@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Hotel_App.Data;
+using Hotel_App.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_App.Services
@@ -68,6 +69,7 @@ namespace Hotel_App.Services
             }
 
             invoice.PaidAt = DateTime.UtcNow;
+            invoice.Booking.Status = BookingStatus.Paid;
             _db.SaveChanges();
 
             Console.WriteLine("Betalning registrerad!");
